@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMind AI — Autonomous Financial Intelligence & Multi-Agent Copilot</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="navbar" role="banner">
+            <div class="brand">
+                <div class="logo-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>FinMind <span>AI</span></h1>
+                    <span class="badge-gcp">GCP Multi-Agent Engine</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="project-pill">
+                    <span class="dot"></span>
+                    <span class="text">GCP: <code>velvety-mason-417105</code></span>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="btn-theme-toggle" class="btn btn-outline" aria-label="Toggle dark/light theme">
+                    🌙 Dark
+                </button>
+
+                <!-- Edit Salary / Profile Button -->
+                <button class="btn btn-outline" onclick="app.openEditProfileModal()" aria-label="Update Salary and Monthly Budget">
+                    ✏️ Update Salary / Budget
+                </button>
+
+                <!-- Export Report Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-outline" id="btn-export-dropdown" aria-haspopup="true" aria-expanded="false">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export ▾
+                    </button>
+                    <div class="dropdown-menu hidden" id="export-menu" role="menu">
+                        <button class="dropdown-item" onclick="app.exportCSV()" role="menuitem">📊 Export CSV Ledger</button>
+                        <button class="dropdown-item" onclick="app.exportPDF()" role="menuitem">📄 Print Audit Summary (PDF)</button>
+                    </div>
+                </div>
+
+                <button id="btn-open-chat" class="btn btn-primary" aria-label="Open FinMind AI Chat Assistant">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Chat Co-pilot
+                </button>
+            </div>
+        </header>
+
+        <!-- Tabbed Navigation Bar -->
+        <div class="tab-nav-container">
+            <nav class="tab-nav" role="tablist" aria-label="Dashboard Views">
+                <button class="tab-btn active" id="tab-btn-overview" onclick="app.switchTab('overview')" role="tab" aria-selected="true" aria-controls="tab-overview">
+                    📊 Overview
+                </button>
+                <button class="tab-btn" id="tab-btn-agents" onclick="app.switchTab('agents')" role="tab" aria-selected="false" aria-controls="tab-agents">
+                    🤖 AI Agents Feed <span class="badge-count">3 Active</span>
+                </button>
+                <button class="tab-btn" id="tab-btn-simulator" onclick="app.switchTab('simulator')" role="tab" aria-selected="false" aria-controls="tab-simulator">
+                    🎛️ "What-If" Simulator
+                </button>
+                <button class="tab-btn" id="tab-btn-goals" onclick="app.switchTab('goals')" role="tab" aria-selected="false" aria-controls="tab-goals">
+                    🎯 Goal Vaults
+                </button>
+                <button class="tab-btn" id="tab-btn-ledger" onclick="app.switchTab('ledger')" role="tab" aria-selected="false" aria-controls="tab-ledger">
+                    📄 Transaction Ledger
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Body Dashboard Layout -->
+        <main class="dashboard-grid" role="main">
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="tab-overview" class="tab-panel" role="tabpanel">
+                <!-- Top Row KPI Summary Cards -->
+                <section class="kpi-grid" aria-label="Financial Key Performance Indicators">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Total Account Balance</span>
+                            <div class="kpi-icon emerald" aria-hidden="true">💵</div>
+                        </div>
+                        <div class="kpi-value" id="kpi-balance">$26,890.04</div>
+                        <div class="kpi-footer text-emerald">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            +4.2% from last month
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Monthly Income</span>
+                            <div class="kpi-icon indigo" aria-hidden="true">📈</div>
+                        </div>
+                        <div class="kpi-value" id="kpi-income">$8,500.00</div>
+                        <div class="kpi-footer text-zinc">
+                            Payroll + Consulting Deposits
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Monthly Burn Rate</span>
+                            <div class="kpi-icon amber" aria-hidden="true">🔥</div>
+                        </div>
+                        <div class="kpi-value" id="kpi-burn">$4,820.00</div>
+                        <div class="kpi-footer text-amber">
+                            <span class="pill-warning" id="kpi-burn-ratio">56.7% of Monthly Cashflow</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Savings & Invest Rate</span>
+                            <div class="kpi-icon purple" aria-hidden="true">🎯</div>
+                        </div>
+                        <div class="kpi-value" id="kpi-savings">43.3%</div>
+                        <div class="kpi-footer text-purple" id="kpi-savings-target">
+                            Target: 40% (Exceeding Goal)
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Grid -->
+                <section class="charts-grid" aria-label="Financial Visualizations">
+                    <!-- Chart 1: 30-Day Balance Forecast -->
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">30-Day Projected Cash Flow Forecast</h3>
+                                <p class="subtitle">Predictive ML balance timeline based on recurring income & daily burn rate</p>
+                            </div>
+                            <span class="badge-tag">BigQuery ML / Time-Series</span>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Category Spending Breakdown -->
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">Category Spending Distribution</h3>
+                                <p class="subtitle">Breakdown of expenses over past 30 days</p>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 2: AI AGENTS FEED -->
+            <div id="tab-agents" class="tab-panel hidden" role="tabpanel">
+                <section aria-label="Autonomous Multi-Agent Intelligence Feed">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <h2 class="card-title">🤖 Autonomous Multi-Agent Intelligence Feed</h2>
+                            <p class="subtitle">Continuous background audit, risk analysis, and advisory co-piloting on BigQuery ledger streams</p>
+                        </div>
+                    </div>
+
+                    <div class="agents-grid">
+                        <!-- Agent 1: Expense Auditor -->
+                        <div class="agent-card alert-auditor">
+                            <div class="agent-badge">
+                                <span class="agent-name">Expense Auditor Agent</span>
+                                <span class="status-active">ACTIVE</span>
+                            </div>
+                            <h3>2 Spending Anomalies & Unused Subscriptions Detected</h3>
+                            <p id="auditor-summary">Audited 268 ledger items. Identified 2 dormant subscriptions (Gym & AWS Sandbox) costing <strong class="text-rose">$138.99/mo</strong>.</p>
+                            <div class="agent-action">
+                                <button class="btn btn-outline btn-sm" onclick="app.showAuditDetails()">Review & Auto-Cancel ($1,667/yr savings)</button>
+                            </div>
+                        </div>
+
+                        <!-- Agent 2: Cash Flow Predictor -->
+                        <div class="agent-card alert-predictor">
+                            <div class="agent-badge">
+                                <span class="agent-name">30-Day Cash Flow Predictor Agent</span>
+                                <span class="status-active">HEALTHY</span>
+                            </div>
+                            <h3>Zero Cash Crunch Risk (Next 30 Days)</h3>
+                            <p id="predictor-summary">Forecast Engine predicts lowest balance of <strong class="text-emerald">$25,315.04</strong> on day 29 after upcoming rent deduction.</p>
+                            <div class="agent-action">
+                                <button class="btn btn-outline btn-sm" onclick="app.showForecastDetails()">View 30-Day Projection Curve</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 3: "WHAT-IF" SIMULATOR -->
+            <div id="tab-simulator" class="tab-panel hidden" role="tabpanel">
+                <section class="simulator-card" aria-label="What-If Financial Scenario Simulator">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">🎛️ "What-If" Financial Scenario Simulator</h2>
+                            <p class="subtitle">Model major purchases, salary raises, or rent increases in real time to preview cash flow impacts.</p>
+                        </div>
+                        <div id="sim-risk-badge" class="sim-impact-badge healthy">Status: HEALTHY</div>
+                    </div>
+
+                    <div class="sim-controls">
+                        <div class="sim-slider-group">
+                            <label for="sim-purchase">Major Purchase ($): <span id="val-sim-purchase">$0</span></label>
+                            <input type="range" id="sim-purchase" min="0" max="40000" step="500" value="0">
+                        </div>
+                        <div class="sim-slider-group">
+                            <label for="sim-expense">Monthly Expense Delta ($/mo): <span id="val-sim-expense">+$0</span></label>
+                            <input type="range" id="sim-expense" min="-1000" max="3000" step="50" value="0">
+                        </div>
+                        <div class="sim-slider-group">
+                            <label for="sim-salary">Income Delta ($/mo): <span id="val-sim-salary">+$0</span></label>
+                            <input type="range" id="sim-salary" min="-2000" max="5000" step="100" value="0">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 4: GOAL VAULTS -->
+            <div id="tab-goals" class="tab-panel hidden" role="tabpanel">
+                <section aria-label="Custom Financial Goals & Vaults">
+                    <div class="section-title-between">
+                        <h2>🎯 Custom Financial Goals & Vaults</h2>
+                        <button class="btn btn-primary btn-sm" onclick="app.openNewGoalModal()">+ Create New Goal</button>
+                    </div>
+
+                    <div class="goals-grid" id="goals-container">
+                        <!-- Populated dynamically via app.js -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB 5: TRANSACTION LEDGER -->
+            <div id="tab-ledger" class="tab-panel hidden" role="tabpanel">
+                <section class="card ledger-card" aria-label="BigQuery Transaction Ledger">
+                    <div class="card-header border-b">
+                        <div>
+                            <h2 class="card-title">📄 FinMind BigQuery Transaction Ledger</h2>
+                            <p class="subtitle">Live streaming financial transactions from <code>finmind_analytics.finmind_transactions</code></p>
+                        </div>
+
+                        <div class="table-controls">
+                            <input type="text" id="tx-search" placeholder="Search merchant or category..." class="search-input" aria-label="Search transactions">
+                            <select id="tx-filter" class="filter-select" aria-label="Filter transaction category">
+                                <option value="ALL">All Categories</option>
+                                <option value="Subscriptions & SaaS">Subscriptions & SaaS</option>
+                                <option value="Housing & Rent">Housing & Rent</option>
+                                <option value="Groceries & Food">Groceries & Food</option>
+                                <option value="Dining out & Entertainment">Dining out & Entertainment</option>
+                                <option value="Salary & Income">Salary & Income</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Date</th>
+                                    <th>Merchant / Description</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Flag / Audit Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-body">
+                                <!-- Populated dynamically via app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification Alert Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Gemini AI Assistant Drawer / Modal -->
+    <div id="chat-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="chat-modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="ai-avatar" aria-hidden="true">🤖</div>
+                    <div>
+                        <h3 id="chat-modal-title">FinMind AI Financial Assistant</h3>
+                        <span class="subtext">Grounded on BigQuery Ledger Data + Gemini 1.5</span>
+                    </div>
+                </div>
+                <button id="btn-close-chat" class="btn-close" aria-label="Close Chat">&times;</button>
+            </div>
+
+            <div class="modal-body" id="chat-messages">
+                <div class="chat-bubble ai">
+                    <strong>FinMind AI Co-pilot:</strong><br>
+                    Hello! I have analyzed your transaction records and 30-day balance forecasts. How can I assist you with your budget, savings goals, or spending audits today?
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="quick-prompts">
+                    <button class="prompt-chip" onclick="app.sendQuickPrompt('How can I save $500 this month?')">💡 How to save $500 this month?</button>
+                    <button class="prompt-chip" onclick="app.sendQuickPrompt('Show me my dormant subscriptions')">🔍 Unused Subscriptions</button>
+                    <button class="prompt-chip" onclick="app.sendQuickPrompt('Forecast my end-of-month balance')">📈 End-of-month Forecast</button>
+                </div>
+                <div class="chat-input-row">
+                    <input type="text" id="chat-input" placeholder="Ask FinMind AI anything about your financial data..." autocomplete="off">
+                    <button id="btn-send-chat" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Financial Goal Modal Dialog -->
+    <div id="goal-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3 id="goal-modal-title">➕ Create Custom Financial Goal</h3>
+                <button id="btn-close-goal" class="btn-close" aria-label="Close Goal Modal">&times;</button>
+            </div>
+            <div class="modal-body-form">
+                <div class="form-group">
+                    <label for="goal-title">Goal Title</label>
+                    <input type="text" id="goal-title" placeholder="e.g. 🚗 New Electric Car" required>
+                </div>
+                <div class="form-group">
+                    <label for="goal-target">Target Amount ($)</label>
+                    <input type="number" id="goal-target" placeholder="15000" required>
+                </div>
+                <div class="form-group">
+                    <label for="goal-current">Initial Saved Amount ($)</label>
+                    <input type="number" id="goal-current" placeholder="2500" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="goal-monthly">Monthly Contribution ($)</label>
+                    <input type="number" id="goal-monthly" placeholder="400" required>
+                </div>
+                <div class="form-group">
+                    <label for="goal-date">Target Date</label>
+                    <input type="date" id="goal-date" required>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="app.saveNewGoal()">Create Goal Vault</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile / Salary & Budget Modal Dialog -->
+    <div id="profile-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3 id="profile-modal-title">✏️ Update Income & Monthly Expense Budget</h3>
+                <button id="btn-close-profile" class="btn-close" aria-label="Close Profile Modal">&times;</button>
+            </div>
+            <div class="modal-body-form">
+                <div class="form-group">
+                    <label for="profile-income">Monthly Salary / Income ($)</label>
+                    <input type="number" id="profile-income" placeholder="8500" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-burn">Monthly Burn Rate / Expense Budget ($)</label>
+                    <input type="number" id="profile-burn" placeholder="4820" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-savings-target">Monthly Target Savings Rate (%)</label>
+                    <input type="number" id="profile-savings-target" placeholder="40" value="40" required>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="app.saveProfileChanges()">Update Profile & Recalculate Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
